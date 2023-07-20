@@ -1,4 +1,4 @@
-module github.com/ribasushi/go-toolbox-interplanetary
+module github.com/jcace/go-toolbox-interplanetary
 
 go 1.20
 
