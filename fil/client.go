@@ -31,3 +31,26 @@ func LotusAPIClientV0(ctx context.Context, url string, timeoutSecs int, bearerTo
 	}
 	return c, closer, nil
 }
+
+func LotusAPIClientV1(ctx context.Context, url string, timeoutSecs int, bearerToken string) (*LotusAPIClient, jsonrpc.ClientCloser, error) { //nolint:revive
+	if timeoutSecs == 0 {
+		timeoutSecs = 30
+	}
+	hdr := make(http.Header, 1)
+	if bearerToken != "" {
+		hdr["Authorization"] = []string{"Bearer " + bearerToken}
+	}
+	c := new(v0api.FullNodeStruct)
+	closer, err := jsonrpc.NewMergeClient(
+		ctx,
+		url+"/rpc/v1",
+		"Filecoin",
+		[]interface{}{&c.Internal, &c.CommonStruct.Internal},
+		hdr,
+		jsonrpc.WithTimeout(time.Duration(timeoutSecs)*time.Second),
+	)
+	if err != nil {
+		return nil, nil, err
+	}
+	return c, closer, nil
+}
